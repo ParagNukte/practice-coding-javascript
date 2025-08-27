@@ -1,9 +1,27 @@
-const array = [1, [2, 3], [4, [5, 6]], [7, [8, [9, 10]]]];
+//throttling 
 
-const flattenArr = (arr) =>
-  arr.reduce(
-    (acc, item) => acc.concat(Array.isArray(item) ? flattenArr(item) : item),
-    []
-  );
+function throttle(fun, delay) {
+  let lastCall = 0;
 
-console.log(flattenArr(array));
+  return function (...args) {
+    const now = Date.now();
+    if (now - lastCall >= delay) {
+      lastCall = now;
+      return fun(...args);
+    }
+  }
+
+}
+
+function display(msg) {
+  console.log("--", msg)
+}
+
+const callDisplay = throttle((arg) => display(arg), 1000);
+callDisplay("Hello")
+callDisplay("Hello Hey")
+callDisplay("Hello Dear")
+callDisplay("Hello Hey Dear")
+callDisplay("Hello Its ME")
+setTimeout(() => callDisplay("Hello Goood"), 2200
+)
