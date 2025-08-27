@@ -1,0 +1,16 @@
+const sample = [
+    [1, 2, 3],
+    ["a", "b", "c"],
+    [true, false],
+    [4.5, 6.7, 8.9],
+    [["x", "y"], ["z"]],
+    [100, 200, [300, 400]],
+    ["nested", ["deep", ["deeper"]]],
+    [[1, 2], [3, 4], [5, 6]],
+    ["apple", "banana", "cherry"],
+    [null, "end"]
+]
+
+const flattenArrayWithReduce = (arr) => arr.reduce((acc, item) => acc.concat(Array.isArray(item) ? flattenArrayWithReduce(item) : item), []);
+
+console.log(flattenArrayWithReduce(sample))
