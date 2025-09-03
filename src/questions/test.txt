@@ -1,0 +1,17 @@
+if (sampleObject === null || typeof (sampleObject) !== 'object') return sampleObject;
+
+    if (Array.isArray(sampleObject)) {
+        let clonedArr = [];
+        for (let i = 0; i < sampleObject.length; i++) {
+            clonedArr[i] = deepClone(sampleObject[i]);
+        }
+        return clonedArr;
+    }
+
+    let clonedObj = {};
+    for (let key in sampleObject) {
+        if (Object.hasOwn(sampleObject, key)) {
+            clonedObj[key] = deepClone(sampleObject[key]);
+        }
+    }
+    return clonedObj;

@@ -29,22 +29,62 @@ const nestedObject = {
     }
 };
 
-function deepClone(sampleObject) {
-    if (sampleObject === null || sampleObject !== 'object') return sampleObject;
+function deepCloneWithoutDateSetMap(obj) {
 
-    if (Array.isArray(sampleObject)) {
-        let clonedArr = [];
-        for (let i = 0; i < sampleObject.length; i++) {
-            clonedArr[i] = deepClone(sampleObject[i]);
+    if (obj === null || typeof (obj) !== 'object') return obj;
+
+    if (Array.isArray(obj)) {
+        let clone = [];
+        for (let key in obj) {
+            clone[key] = deepCloneWithoutDateSetMap(obj[key]);
         }
-        return clonedArr;
+        return clone;
     }
 
-    let clonedObj = {};
-    if (Object.hasOwn(item, key)) {
-        clonedObj[key] = deepClone(item[key]);
-    }
-    return clonedObj;
+    let cloneObj = {};
+    for (let key in obj)
+        if (Object.hasOwn(obj, key)) {
+            cloneObj[key] = deepCloneWithoutDateSetMap(obj[key]);
+        }
+    return cloneObj;
 }
 
-console.log(deepClone(nestedObject));
+function deepCloneWithDateSetMap(obj) {
+    if (obj === null || typeof obj !== "object") {
+        return obj; // primitives
+    }
+
+    // Handle Dates
+    if (obj instanceof Date) {
+        return new Date(obj);
+    }
+
+    // Handle RegExp
+    if (obj instanceof RegExp) {
+        return new RegExp(obj);
+    }
+
+    // Handle Sets
+    if (obj instanceof Set) {
+        return new Set([...obj].map(item => deepCloneWithDateSetMap(item)));
+    }
+
+    // Handle Maps
+    if (obj instanceof Map) {
+        return new Map([...obj].map(([key, value]) => [deepCloneWithDateSetMap(key), deepCloneWithDateSetMap(value)]));
+    }
+
+    // Handle Arrays
+    if (Array.isArray(obj)) {
+        return obj.map(item => deepCloneWithDateSetMap(item));
+    }
+
+    // Handle plain objects
+    let clone = {};
+    for (let key of Object.keys(obj)) {
+        clone[key] = deepCloneWithDateSetMap(obj[key]);
+    }
+    return clone;
+}
+console.log(deepCloneWithoutDateSetMap(nestedObject));
+console.log(deepCloneWithDateSetMap(nestedObject));
